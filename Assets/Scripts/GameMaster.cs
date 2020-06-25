@@ -5,39 +5,60 @@ using System;
 public class GameMaster : MonoBehaviour {
     public GameObject blockPrefab;
     public Canvas actionMenu;
+    public Text txt;
 
-    public Vector2 rootPosition;
     public GameObject[] block;
+    public GameObject tmp;
     Vector3 mousePos;
     bool pressed = false;
     int[] st = new int[40];
     int n = 0;
-    bool[] clicked = new bool[40]; 
-    int[] num = new int[40];
     System.Random rand = new System.Random();
+    public static int score = 0;
+    int[] s1 = {-1, 0, 1, 1, 1, 0, -1, -1};
+    int[] s2 = {1, 1, 1, 0, -1, -1, -1, 0};
 
     void Start() {
+        score = 0;
         block = new GameObject[35];        
 
         for (int i = 0; i < 5; ++i)
         for (int j = 0; j < 7; ++j) {
             int x = i * 7 + j;
-            Vector2 tmp = new Vector2(i * 100, j * 100);
             block[x] = Instantiate(blockPrefab) as GameObject;
-            Vector3 pos = new Vector3();
-            pos.x = 20 + i * 100;
-            pos.y = -300 + j * 100;
-            block[x].transform.position = pos;
+            setNum(x, Rand());
+            setPosition(x, i, j);
             block[x].transform.SetParent(actionMenu.transform,false);
 
-            num[x] = rand.Next(1, 5);
-            num[x] = (int) Math.Pow(2, num[x]);
-            block[x].GetComponentInChildren<Text>().text = num[x].ToString() ;
         }
+    }
 
-        for (int i = 0; i < 35; ++i) clicked[i] = false;
-        Vector3 p = block[0].transform.position;
-        Debug.Log(p.x + " " + p.y);
+    void setNum(int x, int t) {
+        block[x].GetComponent<blockcontroler>().setText(t);
+    }
+
+    int getNum(int x) {
+        return block[x].GetComponent<blockcontroler>().getNum();
+    }
+
+    void setPosition(int x, int i, int j) {
+        block[x].GetComponent<blockcontroler>().setPosition(i,j);
+    }
+
+    void movetoPosition(int x, int cnt) {
+        block[x].GetComponent<blockcontroler>().movetoPosition(cnt);
+    }
+
+    void click(int x) {
+        block[x].GetComponent<blockcontroler>().click();
+    }
+
+    void unclick(int x) {
+        block[x].GetComponent<blockcontroler>().unclick();
+    }
+
+    bool getclicked(int x) {
+        return block[x].GetComponent<blockcontroler>().getClicked();
     }
 
     bool MouseInBlock(float x, float y) {
@@ -53,22 +74,34 @@ public class GameMaster : MonoBehaviour {
         return false;
     }
 
-    void click(int x) {
-        if (clicked[x] == true) return;
-        clicked[x] = true;
-        block[x].GetComponent<Image>().color = new Color(0, 0, 0);
+    void scoring(int sum) {
+        score += sum;
+        txt.text = score.ToString();
     }
 
-    void unclick(int x) {
-        if (clicked[x] == false) return;
-        clicked[x] = false;
-        block[x].GetComponent<Image>().color = new Color(255, 255, 255);
+    int Rand() {
+        int x = rand.Next(1, 5);
+        return (int) Math.Pow(2, x);
+    }
+
+    bool checkEndgame() {
+        for (int i = 0; i < 5; ++i)
+        for (int j = 0; j < 7; ++j) {
+            int b = i * 7 + j;
+            for (int k = 0; k < 8; ++k) {
+                int x = i + s1[k];
+                int y = j + s2[k];
+                int z = x * 7 + y;
+                if (x < 0 || x >= 5) continue;
+                if (y < 0 || y >= 7) continue;
+                if (getNum(b) == getNum(z) || getNum(b) == getNum(z) * 2) return true;
+            }
+        }
+        return true;
     }
 
     void Update() {
         mousePos = Input.mousePosition;
-
-        //Debug.Log("Mouse " + mousePos.x + " " + mousePos.y);
 
         if (Input.GetMouseButtonDown(0)) pressed = true;
         if (Input.GetMouseButtonUp(0)) pressed = false;
@@ -82,43 +115,72 @@ public class GameMaster : MonoBehaviour {
                     break;
                 }
             }
-            Debug.Log("Chi vao o: " + b + " " + n);
             
+            //Debug.Log("Chi vao o: " + b + " " + n);
             if (b == -1) return;
+
             if (n > 1 && st[n-2] == b) {        
                 unclick(st[n-1]);
                 n--;
-                Debug.Log("Giam " + n);
+                //Debug.Log("Giam " + n);
                 return;
             }
 
-            if (clicked[b] == false && (n == 0 || (checkAdject(st[n-1], b) && num[b] >= num[st[n-1]]))) {
+            if (getclicked(b) == false)
+            if (n == 0 || checkAdject(st[n-1], b))
+            if (n == 0 || getNum(b) == getNum(st[n-1]) || getNum(b) == 2 * getNum(st[n-1])) {
                 click(b);
                 st[n] = b;
                 n++;
-                Debug.Log("Tang " + n);
+                //Debug.Log("Tang " + n);
             }
 
         }
         else {
             if (n>0) {
                 int sum = 0;
-                for (int i = 0; i < n; ++i) {
-                    sum+=num[st[i]];
-                    block[st[i]].GetComponentInChildren<Text>().text = "";
-                    num[st[i]]=0;
-                    unclick(st[i]);
-                }
+                for (int i = 0; i < n; ++i) sum += getNum(st[i]);
+                    
+                if (n > 1) scoring(sum);
                 int s = 2;
-                while (s <= sum) s *= 2;
-                s /= 2;
-                block[st[n-1]].GetComponentInChildren<Text>().text = s.ToString();
-                num[st[n-1]] = s;
+                while (s <= sum) s *= 2; s /= 2;
+                setNum(st[n-1], s);
+                unclick(st[n-1]);
 
-                Debug.Log("Vua xoa "+ n);
+                for (int i = 0; i < 5; ++i) {
+                    int p = 0;
+                    int cnt = 0;
+                    for (int j = 0; j < 7; ++j) {
+                        int x = i * 7 + j;
+                        int y = i * 7 + p;
+
+                        if (getclicked(x) == false) {
+                            movetoPosition(x, cnt);
+                            tmp = block[x];
+                            block[x] = block[y];
+                            block[y] = tmp;
+                            p++;
+                        }
+                        else {
+                            unclick(x);
+                            cnt++;
+                        }
+                    }
+
+                    for (int j = p; j < 7; ++j) {
+                        int x = i * 7 + j;
+                        setNum(x, Rand());
+                        setPosition(x, i, j + cnt);
+                        movetoPosition(x, cnt);
+                    }
+                }
+
+                //Debug.Log("Vua xoa "+ n);
             }
             n = 0;
-            Debug.Log("Process Delete");
+            //Debug.Log("Process Delete");
+
+            
         }
 
     }
