@@ -9,6 +9,7 @@ public class GameMaster : MonoBehaviour {
 
     public GameObject[] block;
     public GameObject tmp;
+    public GameObject sss;
     Vector3 mousePos;
     bool pressed = false;
     int[] st = new int[40];
@@ -17,6 +18,8 @@ public class GameMaster : MonoBehaviour {
     public static int score = 0;
     int[] s1 = {-1, 0, 1, 1, 1, 0, -1, -1};
     int[] s2 = {1, 1, 1, 0, -1, -1, -1, 0};
+    int cnt;
+    float w;
 
     void Start() {
         score = 0;
@@ -26,10 +29,9 @@ public class GameMaster : MonoBehaviour {
         for (int j = 0; j < 7; ++j) {
             int x = i * 7 + j;
             block[x] = Instantiate(blockPrefab) as GameObject;
+            block[x].transform.SetParent(actionMenu.transform,false);
             setNum(x, Rand());
             setPosition(x, i, j);
-            block[x].transform.SetParent(actionMenu.transform,false);
-
         }
     }
 
@@ -62,15 +64,15 @@ public class GameMaster : MonoBehaviour {
     }
 
     bool MouseInBlock(float x, float y) {
-        if (mousePos.x < x - 40 || mousePos.x > x + 40) return false;
-        if (mousePos.y < y - 40 || mousePos.y > y + 40) return false;
+        if (mousePos.x < x - w || mousePos.x > x + w) return false;
+        if (mousePos.y < y - w || mousePos.y > y + w) return false;
         return true;
     }
 
     bool checkAdject(int x,int y) {
         Vector2 xx = new Vector2(x / 7, x % 7);
         Vector2 yy = new Vector2(y / 7, y % 7);
-        if (Math.Abs(xx.x - yy.x) <= 1 && Math.Abs(xx.y - yy.y) <= 1) return true;
+        if (Math.Abs(xx.x - yy.x) + Math.Abs(xx.y - yy.y) == 1) return true;
         return false;
     }
 
@@ -102,14 +104,19 @@ public class GameMaster : MonoBehaviour {
 
     void Update() {
         mousePos = Input.mousePosition;
+        Vector3 p1 = sss.GetComponent<Transform>().position;
+        w = p1.x * 40f / 1280f;
 
         if (Input.GetMouseButtonDown(0)) pressed = true;
         if (Input.GetMouseButtonUp(0)) pressed = false;
 
         if (pressed) {
+            //Debug.Log("Mouse: " + mousePos.x + " " + mousePos.y);
+            //Debug.Log("Size: " + w);
+
             int b = -1;
             for (int i = 0; i < 35; ++i) {
-                Vector3 p = block[i].transform.position;
+                Vector3 p = block[i].GetComponent<Transform>().position;
                 if (MouseInBlock(p.x, p.y)) {
                     b = i;
                     break;
@@ -128,7 +135,8 @@ public class GameMaster : MonoBehaviour {
 
             if (getclicked(b) == false)
             if (n == 0 || checkAdject(st[n-1], b))
-            if (n == 0 || getNum(b) == getNum(st[n-1]) || getNum(b) == 2 * getNum(st[n-1])) {
+            if (n == 0 || getNum(b) == getNum(st[n-1]) || getNum(b) == 2 * getNum(st[n-1])) 
+            if (n != 1 || getNum(b) == getNum(st[0])) {
                 click(b);
                 st[n] = b;
                 n++;

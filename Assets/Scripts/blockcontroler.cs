@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 
 public class blockcontroler : MonoBehaviour {
@@ -17,9 +18,9 @@ public class blockcontroler : MonoBehaviour {
 
     public void setPosition(int i,int j) {
         Vector3 pos = new Vector3();
-        pos.x = 20 + i * 100;
+        pos.x = 660 + i * 100;
         pos.y = -300 + j * 100;
-        this.GetComponent<RectTransform>().localPosition = pos;
+        this.GetComponent<RectTransform>().anchoredPosition = pos;
     }
 
     public void setText(int t) {
@@ -48,7 +49,7 @@ public class blockcontroler : MonoBehaviour {
     }
 
     public void movetoPosition(int n) {
-        Vector3 pos = this.GetComponent<RectTransform>().localPosition;
+        Vector3 pos = this.GetComponent<RectTransform>().anchoredPosition;
         z = pos.y - n * 100;
         delaytime = 0f;
     }
@@ -61,7 +62,7 @@ public class blockcontroler : MonoBehaviour {
             return;
         }
         
-        Vector3 pos = this.GetComponent<RectTransform>().localPosition;
+        Vector3 pos = this.GetComponent<RectTransform>().anchoredPosition;
         if (pos.y > z) {
             pos.y -= speed * Time.deltaTime;
             if (pos.y <= z) {
@@ -69,6 +70,6 @@ public class blockcontroler : MonoBehaviour {
                 delaytime = -1f;
             }
         }
-        this.GetComponent<RectTransform>().localPosition = pos;
+        this.GetComponent<RectTransform>().anchoredPosition = pos;
     }
 }
