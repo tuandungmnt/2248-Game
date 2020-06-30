@@ -3,27 +3,22 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class blockcontroler : MonoBehaviour {
-    float x;
-    float y;
-    float z = 1000f;
+public class BlockController : MonoBehaviour {
+    float distance = 1000f;
     float speed = 3000f;
     float delaytime = -1f;
-    public int num = 0;
-    public bool clicked = false;
+    int num = 0;
+    bool clicked = false;
     System.Random rand = new System.Random();
-
-    void Start() {
-    }
 
     public void setPosition(int i,int j) {
         Vector3 pos = new Vector3();
-        pos.x = 660 + i * 100;
+        pos.x = 60 + i * 100;
         pos.y = -300 + j * 100;
         this.GetComponent<RectTransform>().anchoredPosition = pos;
     }
 
-    public void setText(int t) {
+    public void setNum(int t) {
         num = t;
         this.GetComponentInChildren<Text>().text = num.ToString();
     }
@@ -48,9 +43,9 @@ public class blockcontroler : MonoBehaviour {
         return clicked;
     }
 
-    public void movetoPosition(int n) {
+    public void movePosition(int n) {
         Vector3 pos = this.GetComponent<RectTransform>().anchoredPosition;
-        z = pos.y - n * 100;
+        distance = pos.y - n * 100;
         delaytime = 0f;
     }
 
@@ -63,10 +58,10 @@ public class blockcontroler : MonoBehaviour {
         }
         
         Vector3 pos = this.GetComponent<RectTransform>().anchoredPosition;
-        if (pos.y > z) {
+        if (pos.y > distance) {
             pos.y -= speed * Time.deltaTime;
-            if (pos.y <= z) {
-                pos.y = z;
+            if (pos.y <= distance) {
+                pos.y = distance;
                 delaytime = -1f;
             }
         }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3766178237094941337}
   - component: {fileID: 3766178237094941336}
   - component: {fileID: 3766178237094941339}
-  - component: {fileID: 3766178237094941286}
+  - component: {fileID: 5169125833196914358}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -35,8 +35,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchorMin: {x: 0.46875, y: 0.5}
+  m_AnchorMax: {x: 0.46875, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3766178237094941286
+--- !u!114 &5169125833196914358
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
