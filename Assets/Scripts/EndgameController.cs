@@ -13,9 +13,11 @@ public class EndgameController : MonoBehaviour
 
     void Start() {
         buttonReplay.onClick.AddListener(() => {
+            FindObjectOfType<AudioManager>().Play("Click");
             SceneManager.LoadScene(1);
         }); 
         scoreText.text = GameMaster.score.ToString();   
+        FindObjectOfType<AudioManager>().Play("End");
     }
     
     void Update() {

@@ -12,8 +12,10 @@ public class MenuController : MonoBehaviour
 
     void Start() {
         buttonPlay.onClick.AddListener(() => {
+            FindObjectOfType<AudioManager>().Play("Click");
             SceneManager.LoadScene(1);
-        });   
+        });  
+        
     }
 
     void Update() {

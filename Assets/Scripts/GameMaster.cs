@@ -6,11 +6,13 @@ using System.Collections;
 
 public class GameMaster : MonoBehaviour {
     public GameObject blockPrefab;
+    public GameObject linePrefab;
     public Canvas actionMenu;
     public Text scoreText;
     public Button buttonEnd;
 
     public GameObject[] block;
+    public GameObject[] line;
     public GameObject tmp;
     public GameObject sss;
     Vector3 mousePos;
@@ -25,51 +27,64 @@ public class GameMaster : MonoBehaviour {
     float w;
     int matchWidthOrHeight = 0;
     int sh = 0;
+    int cnt1 = 0;
 
     void Start() {
         buttonEnd.onClick.AddListener(() => {
+            FindObjectOfType<AudioManager>().Play("Click");
             SceneManager.LoadScene(2);
         }); 
 
         score = 0;
-        block = new GameObject[35];        
+        block = new GameObject[35];    
+        line = new GameObject[35];    
 
         for (int i = 0; i < 5; ++i)
         for (int j = 0; j < 7; ++j) {
             int x = i * 7 + j;
             block[x] = Instantiate(blockPrefab) as GameObject;
             block[x].transform.SetParent(actionMenu.transform,false);
-            setNum(x, Rand());
-            setPosition(x, i, j);
+            SetNum(x, Rand());
+            SetPosition(x, i, j + 4);
+            MoveDown(x, 4);
         }
+
+        StartCoroutine( Up() ); 
     }
 
-    void setNum(int x, int t) {
-        block[x].GetComponent<BlockController>().setNum(t);
+    void SetNum(int x, int t) {
+        block[x].GetComponent<BlockController>().SetNum(t);
     }
     
-    int getNum(int x) {
-        return block[x].GetComponent<BlockController>().getNum();
+    int GetNum(int x) {
+        return block[x].GetComponent<BlockController>().GetNum();
     }
 
-    void setPosition(int x, int i, int j) {
-        block[x].GetComponent<BlockController>().setPosition(i,j);
+    void SetPosition(int x, int i, int j) {
+        block[x].GetComponent<BlockController>().SetPosition(i,j);
     }
 
-    void movePosition(int x, int cnt) {
-        block[x].GetComponent<BlockController>().movePosition(cnt);
+    void MovePosition(int x, Vector3 pos) {
+        Vector2 v = new Vector2(pos.x, pos.y);
+        block[x].GetComponent<BlockController>().MovePosition(v);
     }
 
-    void click(int x) {
-        block[x].GetComponent<BlockController>().click();
+    void MoveDown(int x, int cnt) {
+        Vector3 pos = block[x].GetComponent<RectTransform>().anchoredPosition;
+        Vector2 v = new Vector2(pos.x, pos.y - cnt * 100);
+        block[x].GetComponent<BlockController>().MovePosition(v);
     }
 
-    void unclick(int x) {
-        block[x].GetComponent<BlockController>().unclick();
+    void Click(int x) {
+        block[x].GetComponent<BlockController>().Click();
     }
 
-    bool getclicked(int x) {
-        return block[x].GetComponent<BlockController>().getClicked();
+    void Unclick(int x) {
+        block[x].GetComponent<BlockController>().Unclick();
+    }
+
+    bool Getclicked(int x) {
+        return block[x].GetComponent<BlockController>().GetClicked();
     }
 
     bool MouseInBlock(float x, float y) {
@@ -78,14 +93,14 @@ public class GameMaster : MonoBehaviour {
         return true;
     }
 
-    bool checkAdject(int x,int y) {
+    bool CheckAdject(int x,int y) {
         Vector2 xx = new Vector2(x / 7, x % 7);
         Vector2 yy = new Vector2(y / 7, y % 7);
         if (Math.Abs(xx.x - yy.x) + Math.Abs(xx.y - yy.y) == 1) return true;
         return false;
     }
 
-    void scoring(int sum) {
+    void Scoring(int sum) {
         score += sum;
         scoreText.text = score.ToString();
     }
@@ -95,7 +110,7 @@ public class GameMaster : MonoBehaviour {
         return (int) Math.Pow(2, x);
     }
 
-    bool checkEndgame() {
+    bool CheckEndgame() {
         for (int i = 0; i < 5; ++i)
         for (int j = 0; j < 7; ++j) {
             int b = i * 7 + j;
@@ -105,7 +120,7 @@ public class GameMaster : MonoBehaviour {
                 int z = x * 7 + y;
                 if (x < 0 || x >= 5) continue;
                 if (y < 0 || y >= 7) continue;
-                if (getNum(b) == getNum(z)) return false;
+                if (GetNum(b) == GetNum(z)) return false;
             }
         }
         return true;
@@ -115,24 +130,29 @@ public class GameMaster : MonoBehaviour {
         yield return new WaitForSeconds(20f);
     }
 
-    void match() {
-        
+    void Match(int n) {
+        if (n <= 1) return;
+        line[n-1] = Instantiate(linePrefab) as GameObject;
+        line[n-1].transform.SetParent(actionMenu.transform,false);
+        Vector3 p1 = block[st[n-1]].GetComponent<RectTransform>().anchoredPosition;
+        Vector3 p2 = block[st[n-2]].GetComponent<RectTransform>().anchoredPosition;
+        Vector3 p3 = new Vector3();
+        p3.x = (p1.x + p2.x) / 2;
+        p3.y = (p1.y + p2.y) / 2;
+        Debug.Log(p3.x + " " + p3.y);
+        line[n-1].GetComponent<RectTransform>().anchoredPosition = p3;
     }
 
-    void unmatch() {
-
+    void Unmatch(int n) {
+        if (n <= 1) return;
+        Destroy(line[n-1]);
     }
  
-    void Update() {
-        if (Camera.main.aspect > 16f / 9f) sh = 1;
-            else sh = 0;
-        if (matchWidthOrHeight != sh) {
-            matchWidthOrHeight = sh;
-            actionMenu.GetComponent<CanvasScaler>().matchWidthOrHeight = sh;
-        }
-
-        if (Input.GetMouseButtonDown(0)) pressed = true;
-        if (Input.GetMouseButtonUp(0)) pressed = false;
+    IEnumerator Up() {
+    while(true) {
+        yield return new WaitForSeconds(0.01f);
+        //if (pressed) Debug.Log(Time.time + ".........................");
+          //  else Debug.Log(Time.time + "**");
 
         if (pressed) {
             mousePos = Input.mousePosition;
@@ -153,38 +173,48 @@ public class GameMaster : MonoBehaviour {
                 }
             }
             
-            if (b == -1) return;
+            if (b == -1) continue;
 
             if (n > 1 && st[n-2] == b) {
-                unmatch();        
-                unclick(st[n-1]);
+                Unmatch(n);        
+                Unclick(st[n-1]);
+                FindObjectOfType<AudioManager>().Play("Turn");
                 n--;
-                return;
+                continue;
             }
 
-            if (getclicked(b) == false)
-            if (n == 0 || checkAdject(st[n-1], b))
-            if (n == 0 || getNum(b) == getNum(st[n-1]) || getNum(b) == 2 * getNum(st[n-1])) 
-            if (n != 1 || getNum(b) == getNum(st[0])) {
-                click(b);
+            if (Getclicked(b) == false)
+            if (n == 0 || CheckAdject(st[n-1], b))
+            if (n == 0 || GetNum(b) == GetNum(st[n-1]) || GetNum(b) == 2 * GetNum(st[n-1])) 
+            if (n != 1 || GetNum(b) == GetNum(st[0])) {
+                Click(b);
+                FindObjectOfType<AudioManager>().Play("Turn");
                 st[n] = b;
                 n++;
-                match();
+                Match(n);
             }
 
         }
         else {
-            if (n>0) {
-                for (int i = 1; i < n; ++i) unmatch();
+            if (n == 1) {
+                Unclick(st[0]);
+            }
+
+            if (n>1) {
+                FindObjectOfType<AudioManager>().Play("Delete");
+                for (int i = 1; i < n; ++i) Unmatch(i+1);
+                for (int i = 0; i < n-1; ++i) MovePosition(st[i], block[st[n-1]].GetComponent<RectTransform>().anchoredPosition);
+                yield return new WaitForSeconds(0.35f);
+                //cnt1++; Debug.Log(cnt1);
+
                 int sum = 0;
-                for (int i = 0; i < n; ++i) sum += getNum(st[i]);
+                for (int i = 0; i < n; ++i) sum += GetNum(st[i]);
                 
-                    
-                if (n > 1) scoring(sum);
+                Scoring(sum);
                 int s = 2;
                 while (s <= sum) s *= 2; s /= 2;
-                setNum(st[n-1], s);
-                unclick(st[n-1]);
+                SetNum(st[n-1], s);
+                Unclick(st[n-1]);
 
                 for (int i = 0; i < 5; ++i) {
                     int p = 0;
@@ -193,37 +223,52 @@ public class GameMaster : MonoBehaviour {
                         int x = i * 7 + j;
                         int y = i * 7 + p;
 
-                        if (getclicked(x) == false) {
-                            movePosition(x, cnt);
+                        if (Getclicked(x) == false) {
+                            MoveDown(x, cnt);
                             tmp = block[x];
                             block[x] = block[y];
                             block[y] = tmp;
                             p++;
                         }
                         else {
-                            unclick(x);
+                            Unclick(x);
                             cnt++;
                         }
                     }
 
                     for (int j = p; j < 7; ++j) {
                         int x = i * 7 + j;
-                        setNum(x, Rand());
-                        setPosition(x, i, j + cnt);
-                        movePosition(x, cnt);
+                        SetNum(x, Rand());
+                        SetPosition(x, i, j + cnt);
+                        MoveDown(x, cnt);
                     }
                 }
+                yield return new WaitForSeconds(0.35f);
+                //cnt1++; Debug.Log(cnt1);
 
             }
             n = 0;
 
-            if (checkEndgame()) {
-                //StartCoroutine(waiter(20f));
+            if (CheckEndgame()) {
+                yield return new WaitForSeconds(1f);
                 SceneManager.LoadScene(2);
             }
             
         }
+    }
+    Debug.Log("ENDED");
+    }
 
+    void Update() {
+        if (Camera.main.aspect > 16f / 9f) sh = 1;
+            else sh = 0;
+        if (matchWidthOrHeight != sh) {
+            matchWidthOrHeight = sh;
+            actionMenu.GetComponent<CanvasScaler>().matchWidthOrHeight = sh;
+        }
+
+        if (Input.GetMouseButtonDown(0)) pressed = true;
+        if (Input.GetMouseButtonUp(0)) pressed = false;
     }
 }
 

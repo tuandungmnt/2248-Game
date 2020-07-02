@@ -458,10 +458,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockPrefab: {fileID: 3766178237094941341, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
     type: 3}
+  linePrefab: {fileID: 9007418303561881305, guid: ea43e05cf7a0c0949be9b4bf7a481bdd,
+    type: 3}
   actionMenu: {fileID: 1014332187}
   scoreText: {fileID: 1055332897}
   buttonEnd: {fileID: 1467747172}
   block: []
+  line: []
   tmp: {fileID: 0}
   sss: {fileID: 1733297975}
 --- !u!1 &1055332895
@@ -922,6 +925,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1014332188}
     m_Modifications:
+    - target: {fileID: 3766178237094941336, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766178237094941336, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: 0eb75bdd5cd88be4993dfb73ee2a83c0, type: 2}
+    - target: {fileID: 3766178237094941336, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766178237094941336, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3766178237094941338, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -990,12 +1013,12 @@ PrefabInstance:
     - target: {fileID: 3766178237094941338, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3766178237094941338, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3766178237094941338, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
         type: 3}
@@ -1035,7 +1058,7 @@ PrefabInstance:
     - target: {fileID: 3766178237094941341, guid: 317f46f1f22a8e74a8e3c7b6bcfea382,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 317f46f1f22a8e74a8e3c7b6bcfea382, type: 3}
