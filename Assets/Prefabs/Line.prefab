@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 9007418303561881309}
   - component: {fileID: 9007418303561881308}
   - component: {fileID: 9007418303561881311}
+  - component: {fileID: 4516409685202588051}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -197,3 +198,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!223 &4516409685202588051
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9007418303561881305}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: -504643447
+  m_SortingOrder: 1
+  m_TargetDisplay: 0

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
+using DG.Tweening;
 
 public class GameMaster : MonoBehaviour {
     public GameObject blockPrefab;
@@ -37,7 +38,7 @@ public class GameMaster : MonoBehaviour {
 
         score = 0;
         block = new GameObject[35];    
-        line = new GameObject[35];    
+        line = new GameObject[70];    
 
         for (int i = 0; i < 5; ++i)
         for (int j = 0; j < 7; ++j) {
@@ -64,15 +65,15 @@ public class GameMaster : MonoBehaviour {
         block[x].GetComponent<BlockController>().SetPosition(i,j);
     }
 
-    void MovePosition(int x, Vector3 pos) {
+    void MovePosition(int x, Vector3 pos, float time) {
         Vector2 v = new Vector2(pos.x, pos.y);
-        block[x].GetComponent<BlockController>().MovePosition(v);
+        block[x].GetComponent<BlockController>().MovePosition(v, time);
     }
 
     void MoveDown(int x, int cnt) {
         Vector3 pos = block[x].GetComponent<RectTransform>().anchoredPosition;
         Vector2 v = new Vector2(pos.x, pos.y - cnt * 100);
-        block[x].GetComponent<BlockController>().MovePosition(v);
+        block[x].GetComponent<BlockController>().MovePosition(v, 0.4f);
     }
 
     void Click(int x) {
@@ -134,18 +135,33 @@ public class GameMaster : MonoBehaviour {
         if (n <= 1) return;
         line[n-1] = Instantiate(linePrefab) as GameObject;
         line[n-1].transform.SetParent(actionMenu.transform,false);
+
         Vector3 p1 = block[st[n-1]].GetComponent<RectTransform>().anchoredPosition;
         Vector3 p2 = block[st[n-2]].GetComponent<RectTransform>().anchoredPosition;
-        Vector3 p3 = new Vector3();
+        Vector2 p3 = new Vector2();
+        Vector3 p4 = new Vector3();
         p3.x = (p1.x + p2.x) / 2;
         p3.y = (p1.y + p2.y) / 2;
-        Debug.Log(p3.x + " " + p3.y);
-        line[n-1].GetComponent<RectTransform>().anchoredPosition = p3;
+
+        p4.x = (p3.x + p2.x) / 2;
+        p4.y = (p3.y + p2.y) / 2;
+        Debug.Log(p3.x + " " + p3.y + " / " + p4.x + " " + p4.y);
+
+        line[n-1].GetComponent<RectTransform>().anchoredPosition = p4;
+        line[n-1].GetComponent<RectTransform>().DOAnchorPos(p3, 0.1f);
     }
 
     void Unmatch(int n) {
         if (n <= 1) return;
-        Destroy(line[n-1]);
+        Vector3 p1 = block[st[n-1]].GetComponent<RectTransform>().anchoredPosition;
+        Vector3 p2 = block[st[n-2]].GetComponent<RectTransform>().anchoredPosition;
+        Vector2 p4 = new Vector2();
+        
+        p4.x = (p1.x + 3 * p2.x) / 4;
+        p4.y = (p1.y + 3 * p2.y) / 4;
+        Debug.Log(p4.x + " " + p4.y);
+        line[n-1].GetComponent<RectTransform>().DOAnchorPos(p4, 0.2f);
+        Destroy(line[n-1], 0.1f);
     }
  
     IEnumerator Up() {
@@ -177,6 +193,8 @@ public class GameMaster : MonoBehaviour {
 
             if (n > 1 && st[n-2] == b) {
                 Unmatch(n);        
+                
+
                 Unclick(st[n-1]);
                 FindObjectOfType<AudioManager>().Play("Turn");
                 n--;
@@ -202,10 +220,17 @@ public class GameMaster : MonoBehaviour {
 
             if (n>1) {
                 FindObjectOfType<AudioManager>().Play("Delete");
-                for (int i = 1; i < n; ++i) Unmatch(i+1);
-                for (int i = 0; i < n-1; ++i) MovePosition(st[i], block[st[n-1]].GetComponent<RectTransform>().anchoredPosition);
-                yield return new WaitForSeconds(0.35f);
+                //for (int i = 1; i < n; ++i) Destroy(line[i]);
+                //for (int i = 0; i < n-1; ++i) MovePosition(st[i], block[st[n-1]].GetComponent<RectTransform>().anchoredPosition);
+                //yield return new WaitForSeconds(0.45f);
                 //cnt1++; Debug.Log(cnt1);
+                for (int i = 1; i < n; ++i) {
+                    Destroy(line[i]);
+                    for (int j = 0; j < i; ++j)
+                        MovePosition(st[j], block[st[i]].GetComponent<RectTransform>().anchoredPosition,0.08f);
+                    yield return new WaitForSeconds(0.08f);
+                }
+                yield return new WaitForSeconds(0.1f);
 
                 int sum = 0;
                 for (int i = 0; i < n; ++i) sum += GetNum(st[i]);
@@ -243,7 +268,7 @@ public class GameMaster : MonoBehaviour {
                         MoveDown(x, cnt);
                     }
                 }
-                yield return new WaitForSeconds(0.35f);
+                yield return new WaitForSeconds(0.4f);
                 //cnt1++; Debug.Log(cnt1);
 
             }

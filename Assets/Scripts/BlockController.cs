@@ -43,7 +43,7 @@ public class BlockController : MonoBehaviour {
         return clicked;
     }
 
-    public void MovePosition(Vector2 x) {
-        this.GetComponent<RectTransform>().DOAnchorPos(x, 0.35f);
+    public void MovePosition(Vector2 x, float time) {
+        this.GetComponent<RectTransform>().DOAnchorPos(x, time).SetEase(Ease.OutQuad);
     }
 }
