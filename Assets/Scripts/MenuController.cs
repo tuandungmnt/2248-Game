@@ -9,13 +9,14 @@ public class MenuController : MonoBehaviour
 
     int matchWidthOrHeight = 0;
     int sh = 0;
+    public static int bestScore;
 
     void Start() {
         buttonPlay.onClick.AddListener(() => {
             FindObjectOfType<AudioManager>().Play("Click");
             SceneManager.LoadScene(1);
         });  
-        
+        bestScore = PlayerPrefs.GetInt("bestScore");
     }
 
     void Update() {

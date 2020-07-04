@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class EndgameController : MonoBehaviour
 {
     public Button buttonReplay;
+    public Text scoreTagText;
     public Text scoreText;
     public Canvas actionMenu;
 
@@ -15,9 +16,15 @@ public class EndgameController : MonoBehaviour
         buttonReplay.onClick.AddListener(() => {
             FindObjectOfType<AudioManager>().Play("Click");
             SceneManager.LoadScene(1);
-        }); 
-        scoreText.text = GameMaster.score.ToString();   
+        });  
         FindObjectOfType<AudioManager>().Play("End");
+
+        scoreText.text = GameMaster.score.ToString();  
+        if (GameMaster.score > MenuController.bestScore) {
+            MenuController.bestScore = GameMaster.score;
+            PlayerPrefs.SetInt("bestScore", MenuController.bestScore);
+            scoreTagText.text = "New Best Score!!";
+        }
     }
     
     void Update() {

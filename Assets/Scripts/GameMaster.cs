@@ -10,6 +10,7 @@ public class GameMaster : MonoBehaviour {
     public GameObject linePrefab;
     public Canvas actionMenu;
     public Text scoreText;
+    public Text bestScoreText;
     public Button buttonEnd;
 
     public GameObject[] block;
@@ -51,6 +52,7 @@ public class GameMaster : MonoBehaviour {
         }
 
         StartCoroutine( Up() ); 
+        bestScoreText.text = "Best Score: " + MenuController.bestScore.ToString();
     }
 
     void SetNum(int x, int t) {

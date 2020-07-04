@@ -31,12 +31,14 @@ public class BlockController : MonoBehaviour {
         if (clicked == true) return;
         clicked = true;
         this.GetComponent<Image>().color = new Color(0, 0, 0);
+        //this.GetComponent<Image>().material.SetFloat("_Transparency", 0.5f);
     }
 
     public void Unclick() {
         if (clicked == false) return;
         clicked = false;
         this.GetComponent<Image>().color = new Color(255, 255, 255);
+        //this.GetComponent<Image>().material.SetFloat("_Transparency", 1.0f);
     }
 
     public bool GetClicked() {
