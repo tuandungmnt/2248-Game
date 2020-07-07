@@ -31,14 +31,12 @@ public class BlockController : MonoBehaviour {
         if (clicked == true) return;
         clicked = true;
         this.GetComponent<Image>().color = new Color(0, 0, 0);
-        //this.GetComponent<Image>().material.SetFloat("_Transparency", 0.5f);
     }
 
     public void Unclick() {
         if (clicked == false) return;
         clicked = false;
         this.GetComponent<Image>().color = new Color(255, 255, 255);
-        //this.GetComponent<Image>().material.SetFloat("_Transparency", 1.0f);
     }
 
     public bool GetClicked() {
@@ -48,4 +46,28 @@ public class BlockController : MonoBehaviour {
     public void MovePosition(Vector2 x, float time) {
         this.GetComponent<RectTransform>().DOAnchorPos(x, time).SetEase(Ease.OutQuad);
     }
+
+    IEnumerator CoChangeNum(int newNum) {
+        if (newNum - num < 10) {
+            for (int i = num + 1; i <= newNum; ++i) { 
+                this.GetComponentInChildren<Text>().text = i.ToString();
+                yield return new WaitForSeconds(0.07f);
+            }
+        }
+        else {
+            float xxx = (float) (newNum - num) / 10;
+            float yyy = num;
+            for (int i = 0; i < 10; ++i) {
+                yyy += xxx;
+                int zzz = (int) yyy;
+                this.GetComponentInChildren<Text>().text = zzz.ToString();
+                yield return new WaitForSeconds(0.07f);
+            }
+        }
+        SetNum(newNum);
+    }
+
+    public void ChangeNum(int newNum) {
+        StartCoroutine( CoChangeNum(newNum) );
+    } 
 }

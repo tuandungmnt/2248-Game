@@ -12,6 +12,7 @@ public class GameMaster : MonoBehaviour {
     public Text scoreText;
     public Text bestScoreText;
     public Button buttonEnd;
+    public Toggle toggle;
 
     public GameObject[] block;
     public GameObject[] line;
@@ -29,13 +30,19 @@ public class GameMaster : MonoBehaviour {
     float w;
     int matchWidthOrHeight = 0;
     int sh = 0;
-    int cnt1 = 0;
+    int toggleIsOn = 0;
+    int[] md = new int[40];
 
     void Start() {
         buttonEnd.onClick.AddListener(() => {
             FindObjectOfType<AudioManager>().Play("Click");
             SceneManager.LoadScene(2);
         }); 
+
+        toggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate {
+            FindObjectOfType<AudioManager>().Play("Click");
+            toggleIsOn = 1 - toggleIsOn;
+        });
 
         score = 0;
         block = new GameObject[35];    
@@ -109,7 +116,9 @@ public class GameMaster : MonoBehaviour {
     }
 
     int Rand() {
-        int x = rand.Next(1, 5);
+        int x;
+        if (toggleIsOn == 0) x = rand.Next(1, 5);
+            else x = rand.Next(4, 11);
         return (int) Math.Pow(2, x);
     }
 
@@ -232,15 +241,16 @@ public class GameMaster : MonoBehaviour {
                         MovePosition(st[j], block[st[i]].GetComponent<RectTransform>().anchoredPosition,0.08f);
                     yield return new WaitForSeconds(0.08f);
                 }
-                yield return new WaitForSeconds(0.1f);
 
                 int sum = 0;
+                int k = 0;
                 for (int i = 0; i < n; ++i) sum += GetNum(st[i]);
                 
                 Scoring(sum);
                 int s = 2;
-                while (s <= sum) s *= 2; s /= 2;
-                SetNum(st[n-1], s);
+                while (s <= sum) s *= 2; 
+                s /= 2;
+
                 Unclick(st[n-1]);
 
                 for (int i = 0; i < 5; ++i) {
@@ -251,11 +261,12 @@ public class GameMaster : MonoBehaviour {
                         int y = i * 7 + p;
 
                         if (Getclicked(x) == false) {
-                            MoveDown(x, cnt);
                             tmp = block[x];
                             block[x] = block[y];
                             block[y] = tmp;
+                            md[y] = cnt;
                             p++;
+                            if (x == st[n-1]) k = y;
                         }
                         else {
                             Unclick(x);
@@ -267,17 +278,27 @@ public class GameMaster : MonoBehaviour {
                         int x = i * 7 + j;
                         SetNum(x, Rand());
                         SetPosition(x, i, j + cnt);
-                        MoveDown(x, cnt);
+                        md[x] = cnt;
                     }
                 }
-                yield return new WaitForSeconds(0.4f);
+
+                Debug.Log(k);
+                
+                //yield return new WaitForSeconds(1f);
+                block[k].GetComponent<BlockController>().ChangeNum(s);
+                for (int i = 0; i < 35; ++i) MoveDown(i, md[i]);
+
+                //yield return new WaitForSeconds(0.2f);
                 //cnt1++; Debug.Log(cnt1);
 
             }
             n = 0;
 
             if (CheckEndgame()) {
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(2f);
+                for (int i = 0; i < 35; ++i) 
+                    block[i].GetComponent<Transform>().DOShakePosition(2f, new Vector3(6f, 3f, 3f), 5, 20f, false, true);
+                yield return new WaitForSeconds(1.8f);
                 SceneManager.LoadScene(2);
             }
             

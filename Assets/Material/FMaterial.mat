@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 42e06210998cca140979bb8a9153a542, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 0.32, y: 0.29}
         m_Offset: {x: 0.22, y: 0.16}
     - _MetallicGlossMap:
@@ -97,7 +97,7 @@ Material:
     - _StencilOp: 7.25
     - _StencilReadMask: 252.24
     - _StencilWriteMask: 255
-    - _Transparency: 1
+    - _Transparency: 0
     - _UVSec: 0
     - _UseUIAlphaClip: 0
     - _ZWrite: 1
