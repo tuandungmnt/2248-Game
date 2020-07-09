@@ -18,10 +18,10 @@ public class GameMaster : MonoBehaviour {
     public GameObject[] line;
     public GameObject tmp;
     public GameObject sss;
-    Vector3 mousePos;
-    bool pressed = false;
-    int[] st = new int[40];
-    int n = 0;
+    private Vector3 mousePos;
+    private bool pressed = false;
+    private int[] st = new int[40];
+    private int n = 0;
     System.Random rand = new System.Random();
     public static int score = 0;
     int[] s1 = {-1, 0, 1, 1, 1, 0, -1, -1};
@@ -81,7 +81,7 @@ public class GameMaster : MonoBehaviour {
 
     void MoveDown(int x, int cnt) {
         Vector3 pos = block[x].GetComponent<RectTransform>().anchoredPosition;
-        Vector2 v = new Vector2(pos.x, pos.y - cnt * 100);
+        Vector2 v = new Vector2(pos.x, pos.y - cnt * 125);
         block[x].GetComponent<BlockController>().MovePosition(v, 0.4f);
     }
 
@@ -110,8 +110,26 @@ public class GameMaster : MonoBehaviour {
         return false;
     }
 
-    void Scoring(int sum) {
+    IEnumerator Scoring(int sum) {
+        int oldscore = score;
         score += sum;
+
+        if (score - oldscore < 10) {
+            for (int i = oldscore + 1; i <= score; ++i) { 
+                scoreText.text = i.ToString();
+                yield return new WaitForSeconds(0.07f);
+            }
+        }
+        else {
+            float xxx = (float) (score - oldscore) / 10;
+            float yyy = oldscore;
+            for (int i = 0; i < 10; ++i) {
+                yyy += xxx;
+                int zzz = (int) yyy;
+                scoreText.text = zzz.ToString();
+                yield return new WaitForSeconds(0.07f);
+            }
+        }
         scoreText.text = score.ToString();
     }
 
@@ -156,7 +174,7 @@ public class GameMaster : MonoBehaviour {
 
         p4.x = (p3.x + p2.x) / 2;
         p4.y = (p3.y + p2.y) / 2;
-        Debug.Log(p3.x + " " + p3.y + " / " + p4.x + " " + p4.y);
+        //Debug.Log(p3.x + " " + p3.y + " / " + p4.x + " " + p4.y);
 
         line[n-1].GetComponent<RectTransform>().anchoredPosition = p4;
         line[n-1].GetComponent<RectTransform>().DOAnchorPos(p3, 0.1f);
@@ -170,7 +188,7 @@ public class GameMaster : MonoBehaviour {
         
         p4.x = (p1.x + 3 * p2.x) / 4;
         p4.y = (p1.y + 3 * p2.y) / 4;
-        Debug.Log(p4.x + " " + p4.y);
+        //Debug.Log(p4.x + " " + p4.y);
         line[n-1].GetComponent<RectTransform>().DOAnchorPos(p4, 0.2f);
         Destroy(line[n-1], 0.1f);
     }
@@ -182,13 +200,11 @@ public class GameMaster : MonoBehaviour {
           //  else Debug.Log(Time.time + "**");
 
         if (pressed) {
-            mousePos = Input.mousePosition;
             Vector3 p1 = sss.GetComponent<Transform>().position;
             float xx = p1.x;
             float yy = p1.y;
 
-            if (matchWidthOrHeight == 0) w = xx * 40f / 1280f;
-                else w = yy * 40f / 720f;
+            w = xx * 50f / 720f;
 
             int b = -1;
             
@@ -246,7 +262,7 @@ public class GameMaster : MonoBehaviour {
                 int k = 0;
                 for (int i = 0; i < n; ++i) sum += GetNum(st[i]);
                 
-                Scoring(sum);
+                StartCoroutine( Scoring(sum) );
                 int s = 2;
                 while (s <= sum) s *= 2; 
                 s /= 2;
@@ -282,7 +298,7 @@ public class GameMaster : MonoBehaviour {
                     }
                 }
 
-                Debug.Log(k);
+                //Debug.Log(k);
                 
                 //yield return new WaitForSeconds(1f);
                 block[k].GetComponent<BlockController>().ChangeNum(s);
@@ -308,15 +324,25 @@ public class GameMaster : MonoBehaviour {
     }
 
     void Update() {
-        if (Camera.main.aspect > 16f / 9f) sh = 1;
+        /*if (Camera.main.aspect > 16f / 9f) sh = 1;
             else sh = 0;
         if (matchWidthOrHeight != sh) {
             matchWidthOrHeight = sh;
             actionMenu.GetComponent<CanvasScaler>().matchWidthOrHeight = sh;
-        }
+        }*/
 
         if (Input.GetMouseButtonDown(0)) pressed = true;
         if (Input.GetMouseButtonUp(0)) pressed = false;
+        mousePos = Input.mousePosition;
+        //Debug.Log(mousePos.x + " " + mousePos.y);
+        
+
+        /*if (Input.touchCount > 0) {
+            pressed = true;
+            Touch _touch = Input.GetTouch(0);
+            mousePos = _touch.position;
+        }
+        else pressed = false;*/
     }
 }
 

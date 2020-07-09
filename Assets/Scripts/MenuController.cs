@@ -16,10 +16,11 @@ public class MenuController : MonoBehaviour
     public static int bestScore;
 
     void Start() {
+        Debug.Log("Hi again");
         buttonPlay.onClick.AddListener(() => {
             StartCoroutine( ChangeScene() ); 
         });  
-        bestScore = PlayerPrefs.GetInt("bestScore");
+        //bestScore = PlayerPrefs.GetInt("bestScore");
     }
 
     IEnumerator ChangeScene() {
@@ -31,11 +32,11 @@ public class MenuController : MonoBehaviour
     }
 
     void Update() {
-        if (Camera.main.aspect > 16f / 9f) sh = 1;
+        /*if (Camera.main.aspect > 16f / 9f) sh = 1;
             else sh = 0;
         if (matchWidthOrHeight != sh) {
             matchWidthOrHeight = sh;
             actionMenu.GetComponent<CanvasScaler>().matchWidthOrHeight = sh;
-        }
+        }*/
     }
 }

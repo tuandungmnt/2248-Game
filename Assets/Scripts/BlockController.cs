@@ -1,21 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using System;
 using System.Collections;
 using DG.Tweening;
 
 public class BlockController : MonoBehaviour {
-    int num = 0;
-    bool clicked = false;
-    System.Random rand = new System.Random();
-    Tweener tween;
+    private int num = 0;
+    private bool clicked = false;
+    //private RectTransform rect;
+    //private Image image;
+
+    private void Start() {
+        //rect = this.GetComponent<RectTransform>();
+        //image = this.GetComponent<Image>();
+    }
 
     public void SetPosition(int i,int j) {
-        Vector3 pos = new Vector3();
-        pos.x = 60 + i * 100;
-        pos.y = -300 + j * 100;
+        var pos = new Vector3 {x = -250 + i * 125, y = 75 + j * 125};
         this.GetComponent<RectTransform>().anchoredPosition = pos;
+        this.GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f, 0.9f);
     }
 
     public void SetNum(int t) {
@@ -30,13 +33,13 @@ public class BlockController : MonoBehaviour {
     public void Click() {
         if (clicked == true) return;
         clicked = true;
-        this.GetComponent<Image>().color = new Color(0, 0, 0);
+        this.GetComponent<Image>().color = new Color(0f, 0f, 0f, 1f);
     }
 
     public void Unclick() {
         if (clicked == false) return;
         clicked = false;
-        this.GetComponent<Image>().color = new Color(255, 255, 255);
+        this.GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f, 0.9f);
     }
 
     public bool GetClicked() {

@@ -22,17 +22,17 @@ public class EndgameController : MonoBehaviour
         scoreText.text = GameMaster.score.ToString();  
         if (GameMaster.score > MenuController.bestScore) {
             MenuController.bestScore = GameMaster.score;
-            PlayerPrefs.SetInt("bestScore", MenuController.bestScore);
+            //PlayerPrefs.SetInt("bestScore", MenuController.bestScore);
             scoreTagText.text = "New Best Score!!";
         }
     }
     
     void Update() {
-        if (Camera.main.aspect > 16f / 9f) sh = 1;
+        /*if (Camera.main.aspect > 16f / 9f) sh = 1;
             else sh = 0;
         if (matchWidthOrHeight != sh) {
             matchWidthOrHeight = sh;
             actionMenu.GetComponent<CanvasScaler>().matchWidthOrHeight = sh;
-        }
+        }*/
     }
 }

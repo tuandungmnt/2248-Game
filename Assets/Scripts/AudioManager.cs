@@ -7,6 +7,7 @@ public class AudioManager : MonoBehaviour
     public Sound[] sounds;
     
     void Start() {
+        Debug.Log("Say hi");
         DontDestroyOnLoad(gameObject);
 
         foreach (Sound s in sounds) 
