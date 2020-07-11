@@ -11,10 +11,15 @@ public class BlockController : MonoBehaviour {
     System.Random rand = new System.Random();
     Tweener tween;
 
+    private void Start()
+    {
+        this.GetComponent<Image>().color = new Color(0.9f, 0.9f, 0.9f, 0.9f);
+    }
+
     public void SetPosition(int i,int j) {
         Vector3 pos = new Vector3();
-        pos.x = 60 + i * 100;
-        pos.y = -300 + j * 100;
+        pos.x = -250 + i * 125;
+        pos.y = 85 + j * 125;
         this.GetComponent<RectTransform>().anchoredPosition = pos;
     }
 
@@ -30,13 +35,13 @@ public class BlockController : MonoBehaviour {
     public void Click() {
         if (clicked == true) return;
         clicked = true;
-        this.GetComponent<Image>().color = new Color(0, 0, 0);
+        this.GetComponent<Image>().color = new Color(0.1f, 0.1f, 0.1f, 0.9f);
     }
 
     public void Unclick() {
         if (clicked == false) return;
         clicked = false;
-        this.GetComponent<Image>().color = new Color(255, 255, 255);
+        this.GetComponent<Image>().color = new Color(0.9f, 0.9f, 0.9f, 0.9f);
     }
 
     public bool GetClicked() {

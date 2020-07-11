@@ -81,7 +81,7 @@ public class GameMaster : MonoBehaviour {
 
     void MoveDown(int x, int cnt) {
         Vector3 pos = block[x].GetComponent<RectTransform>().anchoredPosition;
-        Vector2 v = new Vector2(pos.x, pos.y - cnt * 100);
+        Vector2 v = new Vector2(pos.x, pos.y - cnt * 125);
         block[x].GetComponent<BlockController>().MovePosition(v, 0.4f);
     }
 
@@ -187,9 +187,11 @@ public class GameMaster : MonoBehaviour {
             float xx = p1.x;
             float yy = p1.y;
 
-            if (matchWidthOrHeight == 0) w = xx * 40f / 1280f;
-                else w = yy * 40f / 720f;
-
+            //if (matchWidthOrHeight == 0) w = xx * 40f / 1280f;
+            //    else w = yy * 40f / 720f;
+            
+            w = xx * 50f / 720f;
+            
             int b = -1;
             
             for (int i = 0; i < 35; ++i) {
