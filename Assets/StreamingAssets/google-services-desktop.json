@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "653330373773",
+    "firebase_url": "https://hwaiting-df83d.firebaseio.com",
+    "project_id": "hwaiting-df83d",
+    "storage_bucket": "hwaiting-df83d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653330373773:android:d19e9be0f2ada8245b16c4",
+        "android_client_info": {
+          "package_name": "com.tundng.hwaiting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653330373773-7t5sf0ib9neb5n7pup1mm75pc8s6amj7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBMfIIg5naugpP2IN-frXJYb_L_Ort2V0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653330373773-7t5sf0ib9neb5n7pup1mm75pc8s6amj7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

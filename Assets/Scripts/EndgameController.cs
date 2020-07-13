@@ -13,6 +13,7 @@ public class EndgameController : MonoBehaviour
     int sh = 0;
 
     void Start() {
+        FindObjectOfType<AdsManager>().PlayInitializeAds();
         buttonReplay.onClick.AddListener(() => {
             FindObjectOfType<AudioManager>().Play("Click");
             SceneManager.LoadScene(1);
@@ -25,6 +26,7 @@ public class EndgameController : MonoBehaviour
             PlayerPrefs.SetInt("bestScore", MenuController.bestScore);
             scoreTagText.text = "New Best Score!!";
         }
+        
     }
     
     void Update() {
